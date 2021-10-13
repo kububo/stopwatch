@@ -1,1 +1,3 @@
-# stopwatch
+#Stopwatch
+
+Jednoduché stopky
