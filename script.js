@@ -1,36 +1,43 @@
-let time = 0;
 let interval;
+let time = 0;
 
-const currentTime = document.querySelector('.time');
-const timesList = document.querySelector('.times');
-const startButton = document.querySelector('.start');
-const holdButton = document.querySelector('.hold');
-const stopButton = document.querySelector('.stop');
+const timeElement = document.querySelector('.seconds');
+const timeListElement = document.querySelector('.times');
+const controlButton = document.querySelector('.control');
+const lapButton = document.querySelector('.lap');
 
-startButton.addEventListener('click', () => {
-	startButton.setAttribute('disabled', true);
-	stopButton.removeAttribute('disabled');
+const setTime = (callback) => {
+	time = callback(time);
 
-	time = 0;
+	timeElement.innerText = time.toFixed(1);
+};
 
-	interval = setInterval(() => {
-		time += 0.1;
+const start = () => {
+	timeListElement.innerHTML = '';
+	setTime(() => 0);
 
-		currentTime.innerText = time.toFixed(1);
-	}, 100);
+	interval = setInterval(() => setTime((time) => time + 0.1), 100);
+};
 
-	timesList.innerHTML = '';
-});
-
-stopButton.addEventListener('click', () => {
-	startButton.removeAttribute('disabled');
-	stopButton.setAttribute('disabled', true);
-
+const stop = () => {
 	clearInterval(interval);
-});
+};
 
-holdButton.addEventListener('click', () => {
-	const item = document.createElement('li');
-	item.innerText = time.toFixed(1);
-	timesList.prepend(item);
-});
+const toggleButton = (current) => {
+	const text = current === 'Spustit' ? 'Zastavit' : 'Spustit';
+	const func = current === 'Spustit' ? stop : start;
+
+	controlButton.innerText = text;
+	controlButton.onclick = func;
+};
+
+const lap = () => {
+	const entry = document.createElement('li');
+
+	entry.innerText = `${time.toFixed(1)}s`;
+	timeListElement.prepend(entry);
+};
+
+controlButton.onclick = start;
+controlButton.addEventListener('click', () => toggleButton(controlButton.innerText));
+lapButton.addEventListener('click', lap);
